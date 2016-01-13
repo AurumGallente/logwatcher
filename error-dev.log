@@ -1,0 +1,2 @@
+[Sun Jan 10 23:50:20 2016] [hphp] [2071575:7f4225bff700:1:000001] [] \nFatal error: syntax error, unexpected T_ECHO in /srv/www/pre.crm/-test.php on line 27
+[Mon Jan 11 08:37:36 2016] [hphp] [2079974:7f1cf6bff700:583:000001] [] \nFatal error: Uncaught exception 'ErrorException' with message 'number_format() expects parameter 1 to be double, string given' in /srv/www/pre.crm/ajax.php:618\nStack trace:\n#0 /srv/www/pre.crm/ajax.php(618): Closure$()\n#1 /srv/www/pre.crm/ajax.php(56): get_services()\n#2 {main}
