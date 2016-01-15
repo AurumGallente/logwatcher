@@ -1,3 +1,5 @@
+var bodyParser = require('body-parser');
+var corser = require('corser');
 var express = require('express');
 var Sequelize = require("sequelize");
 var config = require('./config.js');
@@ -13,6 +15,19 @@ var size;
 var res;
 var opts= {offset:0, length:1,position:0};
 var models = require('./models');
+app.use(bodyParser.json());
+// Configure CORS (Cross-Origin Resource Sharing) Headers 
+app.use(corser.create({
+    methods: corser.simpleMethods.concat(["PUT", "DELETE"]),
+    requestHeaders: corser.simpleRequestHeaders.concat(["X-Requested-With", "Authorization"])
+}));
+app.all('*', function(request, response, next) {    
+    response.header('Access-Control-Allow-Origin', '*');
+    response.header('Access-Control-Allow-Credentials', true);
+    response.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With,Authorization,Access-Control-Allow-Origin');
+    response.header('Access-Control-Allow-Methods', 'POST,GET,DELETE');
+    next();    
+});
 models.Record.findAll({limit: 1, order: 'id DESC'}).then(function (records) {    
     position = (!!records[0]) ? parseInt(records[0].dataValues.logIndex) : 0;
     opts.position = (position > 0) ? position : opts.position;
@@ -67,8 +82,17 @@ function getFuckingString(cb, opts){
 }
 setInterval(mainCb, config.interval);
 app.get('/', function(req, res) {
-        models.Record.findAndCountAll({limit: 300, order: 'id ASC'}).then(function (records) {
+        var page = (req.query.page) ? parseInt(req.query.page) - 1 : 0;
+        var perPage = (req.query.perPage && req.query.perPage <= 20) ? parseInt(req.query.perPage) : 5;
+        models.Record.findAndCountAll({offset: page * perPage, limit: perPage, order: 'id DESC'}).then(function (records) {
             res.json(records);
         });
+});
+app.post('/', function(req, res){                
+        models.Record.count({ where: ["id > ?", req.body.lr] }).then(function(count){
+            models.Record.find({limit:1, order: 'id DESC'}).then(function(record){
+                res.json({count:count, record:record});
+            });            
+        });        
 });
 app.listen(config.processPort);
