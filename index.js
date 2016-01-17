@@ -89,10 +89,11 @@ app.get('/', function(req, res) {
         });
 });
 app.post('/', function(req, res){                
-        models.Record.count({ where: ["id > ?", req.body.lr] }).then(function(count){
-            models.Record.find({limit:1, order: 'id DESC'}).then(function(record){
-                res.json({count:count, record:record});
+        //models.Record.count({ where: ["id > ?", req.body.lr] }).then(function(count){
+            models.Record.find({where: ["id >= ?", req.body.lr],limit:1, order: 'id DESC'}).then(function(record){
+                //console.log(record); 
+                res.json({lastid:record.id, record:record});
             });            
-        });        
+        //});        
 });
 app.listen(config.processPort);
