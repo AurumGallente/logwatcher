@@ -24,6 +24,9 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: DataTypes.DATE
+      },
+      logIndex: {
+        type: DataTypes.INTEGER
       }
     }).done(done);
   },

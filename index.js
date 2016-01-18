@@ -28,9 +28,11 @@ app.all('*', function(request, response, next) {
     response.header('Access-Control-Allow-Methods', 'POST,GET,DELETE');
     next();    
 });
-models.Record.findAll({limit: 1, order: 'id DESC'}).then(function (records) {    
+models.Record.findAll({limit: 1, order: 'id DESC'}).then(function (records) {
+        
     position = (!!records[0]) ? parseInt(records[0].dataValues.logIndex) : 0;
     opts.position = (position > 0) ? position : opts.position;
+    console.log(opts.position);
 });
 fs.watchFile(fileName, function(curr, prev){
     mainCb();
