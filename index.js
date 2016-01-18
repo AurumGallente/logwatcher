@@ -69,7 +69,7 @@ function getFuckingString(cb, opts){
         buffer = new Buffer(10000+opts.position);  
         buffer.fill(0);        
         opts.start = opts.position;        
-        while(buffer.toString().indexOf("\r\n")<0 && size>opts.position) {
+        while(buffer.toString().indexOf("\n")<0 && size>opts.position) {
             fs.readSync(fd, buffer, opts.offset,opts.length,opts.position, function(err, num) {
                 console.log(err);
             });
@@ -88,12 +88,10 @@ app.get('/', function(req, res) {
             res.json(records);
         });
 });
-app.post('/', function(req, res){                
-        //models.Record.count({ where: ["id > ?", req.body.lr] }).then(function(count){
-            models.Record.find({where: ["id >= ?", req.body.lr],limit:1, order: 'id DESC'}).then(function(record){
-                //console.log(record); 
+app.post('/', function(req, res){        
+            models.Record.find({where: ["id >= ?", req.body.lr],limit:1, order: 'id DESC'}).then(function(record){ 
+                console.log({lastid:record.id, record:record});
                 res.json({lastid:record.id, record:record});
-            });            
-        //});        
+            });               
 });
 app.listen(config.processPort);
