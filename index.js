@@ -28,9 +28,11 @@ app.all('*', function(request, response, next) {
     response.header('Access-Control-Allow-Methods', 'POST,GET,DELETE');
     next();    
 });
-models.Record.findAll({limit: 1, order: 'id DESC'}).then(function (records) {    
+models.Record.findAll({limit: 1, order: 'id DESC'}).then(function (records) {
+        
     position = (!!records[0]) ? parseInt(records[0].dataValues.logIndex) : 0;
     opts.position = (position > 0) ? position : opts.position;
+    console.log(opts.position);
 });
 fs.watchFile(fileName, function(curr, prev){
     mainCb();
@@ -69,7 +71,7 @@ function getFuckingString(cb, opts){
         buffer = new Buffer(10000+opts.position);  
         buffer.fill(0);        
         opts.start = opts.position;        
-        while(buffer.toString().indexOf("\r\n")<0 && size>opts.position) {
+        while(buffer.toString().indexOf("\n")<0 && size>opts.position) {
             fs.readSync(fd, buffer, opts.offset,opts.length,opts.position, function(err, num) {
                 console.log(err);
             });
