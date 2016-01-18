@@ -68,7 +68,7 @@ function getFuckingString(cb, opts){
             console.log(status.message);
             return;
         }
-        buffer = new Buffer(10000+opts.position);  
+        buffer = new Buffer(10000);  
         buffer.fill(0);        
         opts.start = opts.position;        
         while(buffer.toString().indexOf("\n")<0 && size>opts.position) {
@@ -92,7 +92,7 @@ app.get('/', function(req, res) {
 });
 app.post('/', function(req, res){        
             models.Record.find({where: ["id >= ?", req.body.lr],limit:1, order: 'id DESC'}).then(function(record){ 
-                console.log({lastid:record.id, record:record});
+                console.log({lastid:record.id}); 
                 res.json({lastid:record.id, record:record});
             });               
 });
